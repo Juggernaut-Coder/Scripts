@@ -1,6 +1,11 @@
 #!/bin/sh
 
 gacp () {
+        if [ ! -d .git ]; then
+                echo "Not inside a Git repository."
+                exit 1
+        fi
+
         if [ -z "$1" ]; then
                 git add .
         else
@@ -13,13 +18,13 @@ gacp () {
         fi
 
         git commit
-        if [ $? -eq 0 ]; then
+        if [ $? -ne 0 ]; then
                 echo "Commit failed"
                 exit 1
         fi
 
         git push origin "$(git rev-parse --abbrev-ref HEAD)"
-        if [ $? -eq 0 ]; then
+        if [ $? -ne 0 ]; then
                 echo "Push failed"
                 exit 1
         fi
