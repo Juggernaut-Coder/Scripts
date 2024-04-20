@@ -20,4 +20,4 @@ cp_sh_to_bin () {
         echo "All *.sh files copied to ~/.local/bin"
 }
 
-cp_sh_to_bin "$#"
+cp_sh_to_bin "$@"
