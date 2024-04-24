@@ -37,4 +37,9 @@ submodule_update() {
     fi
 }
 
+submodule_rm() {
+    rm -rf path/to/submodule
+    git rm --cached path/to/submodule
+}
+
 #read -p "Press Enter to exit..."
