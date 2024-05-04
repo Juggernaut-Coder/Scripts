@@ -30,13 +30,13 @@ mkpatch () {
                 mkdir -p outdir
         fi
         echo $commit
-        git format-patch -1 "$commit" -o "$outdir" --diff-algorithm=histogram --summary -s -k --progress --full-index --dirstat=lines,files
+        git format-patch -1 "$commit" -o "$outdir" --stdout --diff-algorithm=histogram --summary -s -k --progress --full-index --dirstat=lines,files
         echo "Patch file created"
 
-        # Append the commit message to the patch file
-        patch_file=$(ls -t "$outdir"/*.patch | head -n 1)
-        echo "" >> "$patch_file"
-        git log -1 --pretty=format:%B "$commit" >> "$patch_file"
+        # # Append the commit message to the patch file
+        # patch_file=$(ls -t "$outdir"/*.patch | head -n 1)
+        # echo "" >> "$patch_file"
+        # git log -1 --pretty=format:%B "$commit" >> "$patch_file"
 }
 
 mkpatch "$@"
