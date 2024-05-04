@@ -26,17 +26,29 @@ mkpatch () {
         fi
         commit=$(git rev-parse HEAD~"$cnum")
         outdir="$(git rev-parse --show-toplevel)_patch"
-        if [ ! -d outdir ]; then
-                mkdir -p outdir
+        if [ ! -d "${outdir}" ]; then
+                mkdir -p "${outdir}"
         fi
-        echo $commit
-        git format-patch -1 "$commit" -o "$outdir" --stdout --diff-algorithm=histogram --summary -s -k --progress --full-index --dirstat=lines,files
-        echo "Patch file created"
 
-        # # Append the commit message to the patch file
-        # patch_file=$(ls -t "$outdir"/*.patch | head -n 1)
-        # echo "" >> "$patch_file"
-        # git log -1 --pretty=format:%B "$commit" >> "$patch_file"
+        start_number_file="${outdir}/start_number.txt"
+        if [ ! -f "$start_number_file" ]; then
+                echo 1 > "$start_number_file"
+        fi
+
+        start_number=$(cat "$start_number_file")
+
+        echo $commit
+        git format-patch -1 "$commit" -o "$outdir" --diff-algorithm=histogram --numstat --stat --summary --signoff --progress --full-index --dirstat=lines,files --start-number="$start_number"
+
+        if [ $? -ne 0 ]; then
+                echo "Patch file creation failed"
+                exit 1
+        else
+                echo "Patch file created"
+                start_number=$((start_number+1))
+                echo "$start_number" > "$start_number_file"
+        fi
+
 }
 
 mkpatch "$@"
